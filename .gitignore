@@ -1,0 +1,37 @@
+# ============================================================
+# POLÍTICA DE MARKDOWN DESTE PROJETO
+# Apenas o README.md da raiz pode ser versionado como .md.
+# Todos os demais .md são ignorados.
+# Exceções só com solicitação explícita do usuário, no formato:
+#   !caminho/arquivo.md
+# ============================================================
+*.md
+!/README.md
+
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+
+# Documentos e material de apoio (não versionar)
+*.pdf
+*.PDF
+
+# Dados e modelos (não versionar arquivos grandes)
+data/
+*.csv
+*.parquet
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.onnx
+runs/
+
+# Ambiente e sistema
+.env
+.DS_Store
