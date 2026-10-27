@@ -1,37 +1,56 @@
-# ============================================================
-# POLÍTICA DE MARKDOWN DESTE PROJETO
-# Apenas o README.md da raiz pode ser versionado como .md.
-# Todos os demais .md são ignorados.
-# Exceções só com solicitação explícita do usuário, no formato:
-#   !caminho/arquivo.md
-# ============================================================
-*.md
-!/README.md
-
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-.ipynb_checkpoints/
-.venv/
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+dist/
+eggs/
+.eggs/
+*.egg-info/
+
+# Virtual environments
+.env
+.venv
+env/
 venv/
+ENV/
+
+# Testing
 .pytest_cache/
-.ruff_cache/
+.coverage
+htmlcov/
 
-# Documentos e material de apoio (não versionar)
-*.pdf
-*.PDF
+# Jupyter
+.ipynb_checkpoints
 
-# Dados e modelos (não versionar arquivos grandes)
-data/
-*.csv
-*.parquet
-*.pkl
-*.joblib
-*.h5
-*.pt
-*.onnx
+# Data (large files)
+data/*
+!data/.gitkeep
+*.zip
+coco/
+datasets/
 runs/
 
-# Ambiente e sistema
-.env
+# Models (heavy weights)
+models/*
+!models/.gitkeep
+*.pt
+*.onnx
+*.weights
+*.pth
+weights/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Docs - only README.md at root versioned per project policy
+docs/**/*.md
+!README.md
