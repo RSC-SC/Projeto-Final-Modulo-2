@@ -45,6 +45,7 @@ weights/
 
 # OS
 .DS_Store
+<<<<<<< Updated upstream
 Thumbs.db
 
 # IDE
@@ -54,3 +55,33 @@ Thumbs.db
 # Docs - only README.md at root versioned per project policy
 docs/**/*.md
 !README.md
+=======
+
+
+
+# Dados e artefatos de treino (baixados/gerados localmente)
+data/
+datasets/
+runs/
+*.pt
+*.onnx
+*.engine
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Sistema
+.DS_Store
+
+# Segredos
+.env
+.env.local
+
+# Ferramenta local (não faz parte do entregável)
+.opencode/
+>>>>>>> Stashed changes
