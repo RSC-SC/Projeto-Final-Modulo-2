@@ -9,6 +9,8 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from app.api.routes import detect
+
 
 app = FastAPI(
     title="ScanVision - Object Detection API",
@@ -17,6 +19,8 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
 )
+
+app.include_router(detect.router)
 
 
 @app.get("/")
