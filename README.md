@@ -263,7 +263,7 @@ Commits no padrão `tipo(escopo): descrição` (ex.: `feat(api): adiciona endpoi
 Quadro público no GitHub Project (#8) com as 6 colunas obrigatórias:
 **Backlog · Todo · Doing · Blocked · Review · Done**.
 
-Todos os cards fizeram transições manuais conforme fluxo (início, handover PR,
+Todos os cards fizeram transições conforme fluxo (início, handover PR,
 finalização). Evidências: comentários nas issues (#7 a #13) e atualizações no
 `docs/estado-projeto.md`.
 
