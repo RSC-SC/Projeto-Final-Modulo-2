@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes import detect
+from app.models.yolo import detector
 
 
 app = FastAPI(
@@ -21,6 +22,12 @@ app = FastAPI(
 )
 
 app.include_router(detect.router)
+
+
+@app.on_event("startup")
+async def startup_event():
+    """Carrega o modelo YOLO no startup da aplicação."""
+    detector.load()
 
 
 @app.get("/")
