@@ -1,0 +1,1 @@
+"""ScanVision FastAPI application package."""
