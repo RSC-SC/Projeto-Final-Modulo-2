@@ -124,6 +124,19 @@ uvicorn main:app --reload --port 8000
 
 Os pesos `yolov8n.pt` (~5,6 MB) são baixados automaticamente na primeira subida.
 
+## Como testar o frontend
+
+**Passo a passo (validação completa):**
+
+1. **Inicie a API:** `uvicorn main:app --reload --port 8000`
+2. **Abra no navegador:** `http://localhost:8000/` (não abra `index.html` diretamente via `file://`).
+3. **Arraste uma imagem** (JPEG/PNG) para a zona de upload.
+4. **O `app.js` envia** `multipart/form-data` para `POST /detect` (`http://127.0.0.1:8000/detect`).
+5. **A API retorna JSON** (`status` + `detections[]` com `class_name`, `confidence`, `box`).
+6. **O `<canvas>` desenha** as caixas (cores por classe) e a tabela + JSON bruto aparecem.
+
+Se aparecer **"Falha ao chamar a API"**: use `http://localhost:8000/` (não `file://`). Verifique `lsof -i :8000`.
+
 ## Interface de demonstração (frontend)
 
 O enunciado exige API que devolve **JSON puro** — nada de imagem desenhada no
