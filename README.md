@@ -5,13 +5,9 @@
 > **Repositório:** <https://github.com/RSC-SC/Projeto-Final-Modulo-2>
 > **Kanban:** <https://github.com/users/RSC-SC/projects/8>
 
-Sistema backend-only de detecção de objetos: um modelo **YOLOv8n** identifica produtos em
-imagens e devolve as caixas delimitadoras em **JSON**, consumíveis por qualquer
-front-end ou sistema de PDV/estoque.
+**Objetivo técnico:** Automação de hortifrúti e padaria no self-checkout. Produtos sem código de barras ou pesados a granel — como maçã, banana, laranja, brócolis, cenoura, bolo e donut — costumam gerar filas e atrito nos caixas autônomos. O sistema `ScanVision` (YOLOv8n + FastAPI) identifica o produto pela imagem, devolve JSON estruturado (`status`, `detections` com `class_name`, `confidence`, `box`) e permite integração com telas de self-checkout/PDV.
 
 ## Dataset e classes
-
-**Fonte:** COCO 2017 (`val2017`), conjunto de anotações do COCO — licença
 [CC BY 4.0](https://cocodataset.org/#termsofuse).
 
 **Preparação própria** (`scripts/prepare_coco_subset.py`): filtramos apenas as imagens
