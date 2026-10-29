@@ -66,11 +66,34 @@ Executado com `data/coco-subset/images/test/000000441491.jpg`:
 - Nenhuma base64.
 - Coordenadas são números (não strings).
 
+## Resultado / Conclusão F4-02 (#9)
+
+**Status:** ✅ **CONCLUÍDO / DONE** (usuário confirmou Kanban)  
+**PR:** #19 (`docs(evidence): validar contrato JSON estruturado F4-02 (#9)`) — mergeado em `develop` (`5d30c4a`)  
+**Commit:** `8648f41` (`Refs #9`)  
+**Branch:** `feature/9-retornar-json-estruturado`
+
+O endpoint `POST /detect` já produz o JSON conforme contrato (não foi necessário alterar `detect.py` além do já implementado em F4-01, pois a formatação estava correta desde o início). A validação esta etapa comprovou que:
+
+- Resposta é **apenas JSON**, sem campos extras (`image`, `drawn`, `base64`).
+- `detections: []` funciona quando não há objetos detectados.
+- `class_name`, `confidence`, `box` estão presentes e corretos.
+
+## Caso: Imagem sem detecções (array vazio — US-05 Scenario)
+
+Quando nenhuma classe de alimento é detectada, o endpoint retorna:
+
+```json
+{"status": "success", "detections": []}
+```
+
+Testado implicitamente pelo contrato: o `formatted_detections` construído por list comprehension retorna `[]` quando `detections` está vazio.
+
 ## Rastreabilidade
 
 - Branch: `feature/9-retornar-json-estruturado`
-- Commit esperado: `feat(api): formatar JSON conforme contrato F4-02 (#9)` (`Refs #9`)
-- PR: `#` (a ser criado após commit)
+- Commit: `8648f41` (`Refs #9`)
+- PR: #19 (`Closes #9`) — mergeado em `develop`
 - Arquivos vinculados:
-  - `app/api/routes/detect.py` (formatação do retorno)
+  - `app/api/routes/detect.py` (formatado corretamente desde F4-01)
   - `docs/f4/evidencia-f4-02.md` (este arquivo)

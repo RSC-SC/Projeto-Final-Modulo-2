@@ -5,8 +5,10 @@ with error handlers following the standardized error contract.
 """
 
 from fastapi import FastAPI, Request, status
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api.routes import detect
@@ -21,6 +23,15 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+# CORS habilitado para demonstrar via frontend local ou remoto
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(detect.router)
 
 
@@ -32,13 +43,8 @@ async def startup_event():
 
 @app.get("/")
 async def root():
-    """Root endpoint returning API information."""
-    return {
-        "status": "success",
-        "message": "ScanVision API - Object Detection Service",
-        "version": "1.0.0",
-        "docs": "/docs",
-    }
+    """Serve o frontend de demonstração (upload + canvas)."""
+    return FileResponse("demo/frontend/index.html")
 
 
 def error_response(
@@ -112,3 +118,6 @@ async def generic_exception_handler(request: Request, exc: Exception):
         message="Erro interno do servidor.",
         hint="Tente novamente mais tarde. Se o problema persistir, entre em contato com o suporte.",
     )
+
+# Mount frontend estático no / (após rotas para não sombrear API)
+app.mount("/", StaticFiles(directory="demo/frontend", html=True), name="frontend")
