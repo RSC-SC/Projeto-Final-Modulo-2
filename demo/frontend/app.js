@@ -75,8 +75,9 @@ async function handleFile(file) {
   setStatus("info", "Enviando para a API...");
   const t0 = performance.now();
   try {
-    const url = endpointInput.value.trim() + (confInput.value > 0 ? `?conf=${confInput.value}` : "");
-    const response = await fetch(url, { method: "POST", body: form });
+    const urlObj = new URL(endpointInput.value.trim());
+    urlObj.searchParams.set("conf", confInput.value); // sempre envia (default 0.25)
+    const response = await fetch(urlObj.toString(), { method: "POST", body: form });
     const elapsed = performance.now() - t0;
     const data = await response.json();
 
