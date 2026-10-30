@@ -31,9 +31,8 @@ dropZone.addEventListener("keydown", (e) => {
 });
 fileInput.addEventListener("change", () => {
   if (fileInput.files.length > 0) {
-    location.reload(); // recarrega a página para atualizar com a nova imagem
+    handleFile(fileInput.files[0]);
   }
-  handleFile(fileInput.files[0]);
 });
 
 ["dragover", "dragenter"].forEach((evt) =>
@@ -50,10 +49,7 @@ fileInput.addEventListener("change", () => {
 );
 dropZone.addEventListener("drop", (e) => {
   const file = e.dataTransfer.files[0];
-  if (file) {
-    location.reload(); // recarrega a página para atualizar com a nova imagem
-    handleFile(file);
-  }
+  if (file) handleFile(file);
 });
 
 // ---------- fluxo principal ----------
@@ -73,6 +69,8 @@ async function handleFile(file) {
 
   imagePanel.hidden = false;
   resultsPanel.hidden = true;
+  rowsEl.innerHTML = ""; // limpa tabela anterior
+  jsonEl.textContent = ""; // limpa JSON anterior
   drawImage();
 
   const form = new FormData();
