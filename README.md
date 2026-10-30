@@ -131,43 +131,32 @@ Os pesos `yolov8n.pt` (~5,6 MB) são baixados automaticamente na primeira subida
 5. **A API retorna JSON** (`status` + `detections[]` com `class_name`, `confidence`, `box`).
 6. **O `<canvas>` desenha** as caixas (cores por classe) e a tabela + JSON bruto aparecem.
 
+**Dica:** para testar com confiança diferente, acrescente `?conf=0.50` na URL da API ou use o campo "Endpoint" no frontend para apontar para `http://localhost:8000/detect?conf=0.50`.
+
 Se aparecer **"Falha ao chamar a API"**: use `http://localhost:8000/` (não `file://`). Verifique `lsof -i :8000`.
-
-## Interface de demonstração (frontend)
-
-O enunciado exige API que devolve **JSON puro** — nada de imagem desenhada no
-backend. Para facilitar o vídeo demonstrativo (F6-02), o repositório inclui uma
-página estática simples em `demo/frontend/index.html` (HTML + CSS + JS, sem
-build):
-
-```bash
-uvicorn main:app --reload
-# abra http://localhost:8000/  (frontend servido pelo mount estático)
-```
-
-Fluxo:
-
-1. Arraste/escolha uma imagem;
-2. O navegador envia `multipart/form-data` para `POST /detect`;
-3. Com o JSON, o `<canvas>` desenha as caixas **no cliente** (cada classe recebe
-cor determinística + rótulo `classe + confiança`);
-4. Exibe também a tabela de detecções e o JSON bruto.
-
-Campo "Endpoint" permite apontar para outra instância (ex.: container remoto).
-Se servido por outro host, habilite `CORS_ORIGINS` (veja abaixo).
-
-> As rotas da API (`/detect`, `/docs`) são registradas **antes** do mount estático,
-> portanto não são sombreadas pelo frontend.
 
 ## Payload de exemplo
 
-**Requisição** (Swagger/Postman/cURL):
+**Requisição padrão (confiança 0.25):**
 
 ```bash
 curl -X POST "http://localhost:8000/detect" \
   -H "accept: application/json" \
   -F "file=@data/coco-subset/images/test/000000441491.jpg"
 ```
+
+**Requisição com confiança ajustada (ex.: 0.50):**
+
+```bash
+curl -X POST "http://localhost:8000/detect?conf=0.50" \
+  -H "accept: application/json" \
+  -F "file=@data/coco-subset/images/test/000000441491.jpg"
+```
+
+**Parâmetro `conf` (query parameter):**
+- Opcional; padrão: `0.25` (ou valor da variável de ambiente `CONF`).
+- Define a confiança mínima para filtrar detecções (0.0 a 1.0).
+- Útil para ajustar sensibilidade: valores menores detectam mais itens (mas podem ter falsos positivos); valores maiores são mais conservadores.
 
 **Resposta real (contrato — sem imagem desenhada):**
 

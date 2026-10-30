@@ -2,11 +2,17 @@
 
 Carrega um modelo da família YOLO (ultralytics) e expõe inferência
 sobre imagens PIL, retornando detecções estruturadas.
+
+Configurações via variáveis de ambiente:
+- CONF: confiança mínima (default: 0.25)
+- IOU: threshold de supressão não-máxima (default: 0.45)
+- DEVICE: dispositivo inferência (auto/mps/cpu, default: auto)
 """
 
 from __future__ import annotations
 
 import logging
+import os
 from typing import Any, Dict, List, Optional
 
 from PIL import Image
@@ -14,10 +20,14 @@ from ultralytics import YOLO
 
 logger = logging.getLogger(__name__)
 
-# Modelo padrão: YOLOv8 nano (pré-treinado no COCO, inclui as 13 classes de
-# alimentos alvo). O arquivo de pesos é baixado automaticamente na primeira
-# execução caso não exista localmente.
 DEFAULT_MODEL_NAME = "yolov8n.pt"
+DEFAULT_CONF = 0.25
+DEFAULT_IOU = 0.45
+
+# Lê configurações do ambiente (fallback para valores padrão)
+CONF = float(os.environ.get("CONF", DEFAULT_CONF))
+IOU = float(os.environ.get("IOU", DEFAULT_IOU))
+DEVICE = os.environ.get("DEVICE", "auto")
 
 
 class YOLODetector:
@@ -38,12 +48,24 @@ class YOLODetector:
         self._loaded = True
         logger.info("Modelo YOLO carregado com sucesso: %s", self.model_name)
 
-    def predict(self, image: Image.Image) -> List[Dict[str, Any]]:
-        """Executa inferência sobre uma imagem PIL e retorna detecções."""
+    def predict(self, image: Image.Image, conf_threshold: float = CONF) -> List[Dict[str, Any]]:
+        """Executa inferência sobre uma imagem PIL e retorna detecções filtradas.
+
+        Args:
+            image: Imagem PIL.
+            conf_threshold: Limiares de confiança mínimo; detecções abaixo desse valor
+                são excluídas.
+        """
         if not self._loaded or self.model is None:
             raise RuntimeError("YOLO model não carregado. Chame load() primeiro.")
 
-        results = self.model(image)
+        # Passar confiança para o inferidor YOLO (yolov8/ultralytics suporta conf)
+        results = self.model.predict(
+            image,
+            conf=conf_threshold,
+            device="cpu",
+            verbose=False
+        )
         detections: List[Dict[str, Any]] = []
 
         for result in results:
@@ -53,6 +75,9 @@ class YOLODetector:
             for box in boxes:
                 cls_id = int(box.cls[0])
                 conf = float(box.conf[0])
+                # Refiltrar via conf_threshold novamente (proteção extra)
+                if conf < conf_threshold:
+                    continue
                 xyxy = box.xyxy[0].tolist()
                 detections.append(
                     {

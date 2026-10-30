@@ -11,6 +11,7 @@
 const dropZone = document.getElementById("drop-zone");
 const fileInput = document.getElementById("file-input");
 const endpointInput = document.getElementById("endpoint");
+const confInput = document.getElementById("conf");
 const statusEl = document.getElementById("status");
 const imagePanel = document.getElementById("image-panel");
 const resultsPanel = document.getElementById("results-panel");
@@ -29,7 +30,9 @@ dropZone.addEventListener("keydown", (e) => {
   if (e.key === "Enter" || e.key === " ") fileInput.click();
 });
 fileInput.addEventListener("change", () => {
-  if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
+  if (fileInput.files.length > 0) {
+    handleFile(fileInput.files[0]);
+  }
 });
 
 ["dragover", "dragenter"].forEach((evt) =>
@@ -66,15 +69,22 @@ async function handleFile(file) {
 
   imagePanel.hidden = false;
   resultsPanel.hidden = true;
+  rowsEl.innerHTML = ""; // limpa tabela anterior
+  jsonEl.textContent = ""; // limpa JSON anterior
   drawImage();
 
   const form = new FormData();
   form.append("file", file);
 
-  setStatus("info", "Enviando para a API...");
+  fileInput.value = ""; // permite selecionar o mesmo arquivo novamente (reset)
+
+  setStatus("info", `Enviando para a API (conf=${confInput.value})...`);
   const t0 = performance.now();
   try {
-    const response = await fetch(endpointInput.value.trim(), { method: "POST", body: form });
+    const urlObj = new URL(endpointInput.value.trim());
+    urlObj.searchParams.set("conf", confInput.value); // sempre envia (default 0.25)
+    console.log("[ScanVision] Confiança enviada:", confInput.value, "| URL:", urlObj.toString());
+    const response = await fetch(urlObj.toString(), { method: "POST", body: form });
     const elapsed = performance.now() - t0;
     const data = await response.json();
 

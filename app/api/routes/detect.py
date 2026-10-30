@@ -6,11 +6,12 @@ Se não houver detecções, retorna array vazio sem imagem desenhada.
 """
 
 import io
+from typing import Optional
 
-from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
 from PIL import Image
 
-from app.models.yolo import detector
+from app.models.yolo import CONF as DEFAULT_CONF, detector
 
 router = APIRouter()
 
@@ -19,11 +20,22 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
 @router.post("/detect")
-async def detect(file: UploadFile = File(...)):
+async def detect(
+    file: UploadFile = File(...),
+    conf: Optional[float] = Query(
+        default=DEFAULT_CONF,
+        ge=0.0,
+        le=1.0,
+        description="Confiança mínima do YOLO para filtrar detecções (default: 0.25)",
+    ),
+):
     """Detect objects in uploaded image using YOLO model.
 
     Returns JSON with status and detections array.
     Each detection has class_name, confidence, and box coordinates.
+
+    Query parameter ``conf`` (default 0.25 / env CONF) defines the minimum
+    confidence threshold. Deteções abaixo desse valor são filtradas.
     """
     if not file.filename:
         raise HTTPException(
@@ -56,7 +68,7 @@ async def detect(file: UploadFile = File(...)):
             detail=f"Não foi possível processar a imagem: {exc}",
         )
 
-    detections = detector.predict(image)
+    detections = detector.predict(image, conf_threshold=conf)
 
     # Format response without class_id (contract: class_name, confidence, box)
     formatted_detections = [
