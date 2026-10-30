@@ -30,7 +30,10 @@ dropZone.addEventListener("keydown", (e) => {
   if (e.key === "Enter" || e.key === " ") fileInput.click();
 });
 fileInput.addEventListener("change", () => {
-  if (fileInput.files.length > 0) handleFile(fileInput.files[0]);
+  if (fileInput.files.length > 0) {
+    location.reload(); // recarrega a página para atualizar com a nova imagem
+  }
+  handleFile(fileInput.files[0]);
 });
 
 ["dragover", "dragenter"].forEach((evt) =>
@@ -47,7 +50,10 @@ fileInput.addEventListener("change", () => {
 );
 dropZone.addEventListener("drop", (e) => {
   const file = e.dataTransfer.files[0];
-  if (file) handleFile(file);
+  if (file) {
+    location.reload(); // recarrega a página para atualizar com a nova imagem
+    handleFile(file);
+  }
 });
 
 // ---------- fluxo principal ----------
