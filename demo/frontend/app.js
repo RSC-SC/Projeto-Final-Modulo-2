@@ -72,11 +72,12 @@ async function handleFile(file) {
   const form = new FormData();
   form.append("file", file);
 
-  setStatus("info", "Enviando para a API...");
+  setStatus("info", `Enviando para a API (conf=${confInput.value})...`);
   const t0 = performance.now();
   try {
     const urlObj = new URL(endpointInput.value.trim());
     urlObj.searchParams.set("conf", confInput.value); // sempre envia (default 0.25)
+    console.log("[ScanVision] Confiança enviada:", confInput.value, "| URL:", urlObj.toString());
     const response = await fetch(urlObj.toString(), { method: "POST", body: form });
     const elapsed = performance.now() - t0;
     const data = await response.json();
