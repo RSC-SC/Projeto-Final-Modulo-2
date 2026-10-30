@@ -64,6 +64,7 @@ class YOLODetector:
             image,
             conf=conf_threshold,
             device="cpu",
+            classes=[39, 41, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55],
             verbose=False
         )
         detections: List[Dict[str, Any]] = []
