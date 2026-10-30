@@ -11,6 +11,7 @@
 const dropZone = document.getElementById("drop-zone");
 const fileInput = document.getElementById("file-input");
 const endpointInput = document.getElementById("endpoint");
+const confInput = document.getElementById("conf");
 const statusEl = document.getElementById("status");
 const imagePanel = document.getElementById("image-panel");
 const resultsPanel = document.getElementById("results-panel");
@@ -74,7 +75,8 @@ async function handleFile(file) {
   setStatus("info", "Enviando para a API...");
   const t0 = performance.now();
   try {
-    const response = await fetch(endpointInput.value.trim(), { method: "POST", body: form });
+    const url = endpointInput.value.trim() + (confInput.value > 0 ? `?conf=${confInput.value}` : "");
+    const response = await fetch(url, { method: "POST", body: form });
     const elapsed = performance.now() - t0;
     const data = await response.json();
 
