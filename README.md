@@ -131,6 +131,8 @@ Os pesos `yolov8n.pt` (~5,6 MB) são baixados automaticamente na primeira subida
 5. **A API retorna JSON** (`status` + `detections[]` com `class_name`, `confidence`, `box`).
 6. **O `<canvas>` desenha** as caixas (cores por classe) e a tabela + JSON bruto aparecem.
 
+**Dica:** para testar com confiança diferente, acrescente `?conf=0.50` na URL da API ou use o campo "Endpoint" no frontend para apontar para `http://localhost:8000/detect?conf=0.50`.
+
 Se aparecer **"Falha ao chamar a API"**: use `http://localhost:8000/` (não `file://`). Verifique `lsof -i :8000`.
 
 ## Interface de demonstração (frontend)
@@ -161,13 +163,26 @@ Se servido por outro host, habilite `CORS_ORIGINS` (veja abaixo).
 
 ## Payload de exemplo
 
-**Requisição** (Swagger/Postman/cURL):
+**Requisição padrão (confiança 0.25):**
 
 ```bash
 curl -X POST "http://localhost:8000/detect" \
   -H "accept: application/json" \
   -F "file=@data/coco-subset/images/test/000000441491.jpg"
 ```
+
+**Requisição com confiança ajustada (ex.: 0.50):**
+
+```bash
+curl -X POST "http://localhost:8000/detect?conf=0.50" \
+  -H "accept: application/json" \
+  -F "file=@data/coco-subset/images/test/000000441491.jpg"
+```
+
+**Parâmetro `conf` (query parameter):**
+- Opcional; padrão: `0.25` (ou valor da variável de ambiente `CONF`).
+- Define a confiança mínima para filtrar detecções (0.0 a 1.0).
+- Útil para ajustar sensibilidade: valores menores detectam mais itens (mas podem ter falsos positivos); valores maiores são mais conservadores.
 
 **Resposta real (contrato — sem imagem desenhada):**
 
