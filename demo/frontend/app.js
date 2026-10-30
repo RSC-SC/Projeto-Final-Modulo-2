@@ -76,6 +76,8 @@ async function handleFile(file) {
   const form = new FormData();
   form.append("file", file);
 
+  fileInput.value = ""; // permite selecionar o mesmo arquivo novamente (reset)
+
   setStatus("info", `Enviando para a API (conf=${confInput.value})...`);
   const t0 = performance.now();
   try {
